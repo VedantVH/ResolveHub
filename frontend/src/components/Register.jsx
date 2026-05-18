@@ -33,7 +33,7 @@ const Register = () => {
       <div className="glass-card" style={styles.card}>
         <div style={styles.header}>
           <h2 style={styles.title}>Create Account</h2>
-          <p style={styles.subtitle}>Get started with SmartHR platform</p>
+          <p style={styles.subtitle}>Get started with ResolveHub platform</p>
         </div>
         
         {error && <div style={styles.error}>{error}</div>}

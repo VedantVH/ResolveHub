@@ -18,7 +18,7 @@ const Navbar = () => {
     <nav style={styles.nav}>
       <div style={styles.logoContainer}>
         <div style={styles.logoGlow}></div>
-        <span style={styles.logoText}>SmartHR🏆</span>
+        <span style={styles.logoText}>ResolveHub 🏆</span>
       </div>
       
       <div style={styles.links}>

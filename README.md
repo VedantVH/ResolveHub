@@ -1,4 +1,4 @@
-# 🏆 Smart Leave & Complaint Management System
+# 🏆 ResolveHub: Smart Leave & Complaint Management System
 
 An enterprise-grade, role-based workflow application built for seamless management of employee leave requests and grievance resolutions. Designed to satisfy modern Full Stack Engineer (FSE) industry benchmarks (including Cognizant FSE / GenC Next evaluations), technical assessments, and recruitment examinations at top product and service-oriented organizations, this system transitions manual, spreadsheet-based systems into a high-performance, auditable digital portal.
 

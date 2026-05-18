@@ -31,7 +31,7 @@ const Login = () => {
       <div className="glass-card" style={styles.card}>
         <div style={styles.header}>
           <h2 style={styles.title}>Welcome Back</h2>
-          <p style={styles.subtitle}>Enter your credentials to access SmartHR</p>
+          <p style={styles.subtitle}>Enter your credentials to access ResolveHub</p>
         </div>
         
         {error && <div style={styles.error}>{error}</div>}

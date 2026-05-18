@@ -1,6 +1,6 @@
 # 🏆 Smart Leave & Complaint Management System
 
-An enterprise-grade, role-based workflow application built for seamless management of employee leave requests and grievance resolutions. Designed to satisfy Cognizant FSE hiring expectations, this system transitions manual, Excel-based management into a high-performance digital portal with real-time feedback loops.
+An enterprise-grade, role-based workflow application built for seamless management of employee leave requests and grievance resolutions. Designed to satisfy modern Full Stack Engineer (FSE) industry benchmarks, technical assessments, and recruitment evaluations at top product and service-oriented organizations, this system transitions manual, spreadsheet-based systems into a high-performance, auditable digital portal.
 
 ---
 
@@ -16,15 +16,28 @@ An enterprise-grade, role-based workflow application built for seamless manageme
 
 #### 👩‍💼 HR/Admin Portal (Specialist)
 - **HR Analytics Dashboard**: High-level visual widgets tracking active leave pipelines, approved leaves, and open unresolved grievances.
+- **AOP System Telemetry**: Live performance diagnostics dashboard fetching real-time execution times of Java services.
 - **Approval Engine**: Single-click processing to Approve/Reject leaves or Resolve complaints.
 - **Auditable Logs**: Aggregated view of all organizational records.
 
 ---
 
-## 📧 Advanced Standout Feature: Automated Email Notification
-To deliver maximum interview and shortlist value, the backend contains an **Email Notification micro-service**.
-- **Leave Approved/Rejected Alert**: Automatically triggers customized notifications to employees when an HR manager updates their application.
-- **Complaint Resolution Alert**: Immediately notifies employees with details once their grievance has been resolved.
+## ⚡ Advanced Architectural Integrations
+
+### 📊 Aspect-Oriented Programming (Spring AOP Profiling)
+To demonstrate advanced system-level engineering, the backend implements Spring AOP to profile and audit service performance.
+- **Aspect Execution**: The `PerformanceLoggingAspect` class dynamically intercepts method executions inside the service layer and records execution metrics.
+- **Visual Analytics**: Metrics are securely exposed via the REST endpoint `/api/admin/metrics` and visualized inside a dedicated "Spring Boot Runtime Telemetry" card inside the React Admin dashboard.
+
+### 🔀 Asynchronous Concurrency & Multithreading (`@Async`)
+To keep backend operations highly responsive, transactional emails are dispatched asynchronously.
+- **Thread Pool Config**: Set up a custom `ThreadPoolTaskExecutor` pool inside `AsyncConfig` (`core: 3`, `max: 10`, `queue: 100`).
+- **Async Execution**: Annotating `EmailService` with `@Async` offloads SMTP processing to background worker threads, freeing HTTP request threads immediately.
+
+### 🛡️ Custom Java Constraints & Validation (JSR-380 Spec)
+Rather than relying solely on client validation, strict custom validation constraints are enforced on the Java model:
+- **DateRange Constraint**: Created `@ValidDateRange` custom annotation supported by a custom `DateRangeValidator` class.
+- **REST Exception Handler**: A global `@RestControllerAdvice` class (`GlobalExceptionHandler`) intercepts validation rejections and returns formatted, field-specific `ErrorResponse` payloads.
 
 ---
 

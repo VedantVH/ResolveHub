@@ -15,7 +15,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav style={styles.nav}>
+    <nav className="navbar-pill">
       <div style={styles.logoContainer}>
         <div style={styles.logoGlow}></div>
         <span style={styles.logoText}>ResolveHub 🏆</span>

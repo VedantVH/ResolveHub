@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import axios from 'axios';
-import { Calendar, AlertTriangle, CheckCircle, Clock, Plus, BarChart2, Cpu } from 'lucide-react';
+import { Calendar, AlertTriangle, CheckCircle, Clock, Plus, Cpu, Activity, TrendingUp, Sparkles, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { LeaveAnalyticsChart, TelemetryBarChart } from './AnalyticsCharts';
+import ExportCSVButton from './ExportCSVButton';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -12,6 +15,7 @@ const Dashboard = () => {
   const [complaints, setComplaints] = useState([]);
   const [metrics, setMetrics] = useState({});
   const [loading, setLoading] = useState(true);
+  const [searchFilter, setSearchFilter] = useState('');
 
   const fetchDashboardData = async () => {
     try {
@@ -68,191 +72,250 @@ const Dashboard = () => {
   };
 
   if (loading) {
-    return <div style={styles.loading}>Loading Dashboard...</div>;
+    return (
+      <div style={styles.loading}>
+        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}>
+          <Activity size={32} style={{ color: 'var(--primary)' }} />
+        </motion.div>
+        <span style={{ marginLeft: '1rem' }}>Initializing High-Performance Portal...</span>
+      </div>
+    );
   }
 
-  // Analytics helper calculations
   const pendingLeaves = leaves.filter(l => l.status === 'PENDING').length;
   const approvedLeaves = leaves.filter(l => l.status === 'APPROVED').length;
   const activeComplaints = complaints.filter(c => c.status === 'OPEN').length;
 
+  const filteredLeaves = leaves.filter(l => 
+    (l.reason && l.reason.toLowerCase().includes(searchFilter.toLowerCase())) ||
+    (l.applicantName && l.applicantName.toLowerCase().includes(searchFilter.toLowerCase()))
+  );
+
   return (
-    <div className="main-content">
-      {/* Welcome Banner */}
-      <div className="glass-card" style={styles.welcomeBanner}>
+    <motion.div 
+      className="main-content"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+    >
+      {/* Editorial Welcome Hero Banner */}
+      <motion.div 
+        className="glass-card hero-card" 
+        style={styles.welcomeBanner}
+        whileHover={{ scale: 1.005 }}
+      >
         <div>
-          <h1 style={styles.welcomeTitle}>Hello, {user.name} 👋</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+            <Sparkles size={18} style={{ color: 'var(--accent-orange)' }} />
+            <span style={{ fontSize: '0.85rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-orange)' }}>Enterprise Workflow Portal</span>
+          </div>
+          <h1 style={styles.welcomeTitle}>Welcome back, {user.name} 👋</h1>
           <p style={styles.welcomeSubtitle}>
             {user.role === 'ADMIN' 
-              ? 'Manage and coordinate organizational leaves and concerns efficiently.' 
-              : 'Apply for leaves, raise complaints, and track your history all in one place.'}
+              ? 'Real-time telemetry, leave request pipeline, and grievance resolution hub.' 
+              : 'Apply for leaves, raise complaints, and track real-time resolution metrics.'}
           </p>
         </div>
         {user.role === 'USER' && (
           <div style={styles.welcomeActions}>
-            <Link to="/leaves" className="btn btn-primary" style={{ textDecoration: 'none' }}>
-              <Plus size={16} /> Apply Leave
-            </Link>
-            <Link to="/complaints" className="btn btn-secondary" style={{ textDecoration: 'none' }}>
-              <Plus size={16} /> File Complaint
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link to="/leaves" className="btn btn-primary" style={{ textDecoration: 'none' }}>
+                <Plus size={16} /> Apply Leave
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link to="/complaints" className="btn btn-secondary" style={{ textDecoration: 'none' }}>
+                <Plus size={16} /> File Grievance
+              </Link>
+            </motion.div>
           </div>
         )}
-      </div>
+      </motion.div>
 
-      {/* Analytics Grid */}
+      {/* Analytics Widget Grid */}
       <div style={styles.analyticsGrid}>
-        <div className="glass-card" style={styles.statCard}>
-          <div style={{ ...styles.statIconContainer, background: 'var(--warning-glow)', color: 'var(--warning)' }}>
+        <motion.div className="glass-card" style={styles.statCard} whileHover={{ y: -4 }}>
+          <div style={{ ...styles.statIconContainer, background: '#fde8d7', color: '#c25e00' }}>
             <Clock size={24} />
           </div>
           <div>
             <div style={styles.statLabel}>{user.role === 'ADMIN' ? 'Pending Approvals' : 'My Pending Leaves'}</div>
             <div style={styles.statVal}>{pendingLeaves}</div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="glass-card" style={styles.statCard}>
-          <div style={{ ...styles.statIconContainer, background: 'var(--success-glow)', color: 'var(--success)' }}>
+        <motion.div className="glass-card" style={styles.statCard} whileHover={{ y: -4 }}>
+          <div style={{ ...styles.statIconContainer, background: '#e6f0e1', color: '#3b6624' }}>
             <CheckCircle size={24} />
           </div>
           <div>
             <div style={styles.statLabel}>{user.role === 'ADMIN' ? 'Approved Leaves' : 'Approved Requests'}</div>
             <div style={styles.statVal}>{approvedLeaves}</div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="glass-card" style={styles.statCard}>
-          <div style={{ ...styles.statIconContainer, background: 'var(--danger-glow)', color: 'var(--danger)' }}>
+        <motion.div className="glass-card" style={styles.statCard} whileHover={{ y: -4 }}>
+          <div style={{ ...styles.statIconContainer, background: '#fbe3dc', color: '#b83a1b' }}>
             <AlertTriangle size={24} />
           </div>
           <div>
-            <div style={styles.statLabel}>{user.role === 'ADMIN' ? 'Open Issues' : 'My Active Issues'}</div>
+            <div style={styles.statLabel}>{user.role === 'ADMIN' ? 'Open Grievances' : 'My Active Issues'}</div>
             <div style={styles.statVal}>{activeComplaints}</div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
-      {/* Spring Boot Live Telemetry Console (AOP Profiler Insights) */}
-      {user.role === 'ADMIN' && (
-        <div className="glass-card" style={{ marginBottom: '2.5rem', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(18, 20, 32, 0.7) 100%)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
-            <Cpu size={22} style={{ color: 'var(--primary)' }} />
-            <h2 style={{ fontSize: '1.2rem', fontWeight: '700' }}>Spring Boot Runtime Telemetry <span style={{ fontSize: '0.75rem', color: 'var(--success)', marginLeft: '0.5rem', background: 'var(--success-glow)', padding: '0.15rem 0.5rem', borderRadius: '99px', border: '1px solid rgba(16,185,129,0.2)' }}>AOP Profiler Active</span></h2>
+      {/* Chart.js Analytics & AOP Telemetry Section */}
+      <div style={{ display: 'grid', gridTemplateColumns: user.role === 'ADMIN' ? '1fr 1fr' : '1fr', gap: '2rem', marginBottom: '2.5rem' }}>
+        <motion.div className="glass-card" style={{ padding: '2rem' }} whileHover={{ y: -3 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <TrendingUp size={20} style={{ color: 'var(--primary)' }} />
+              <h2 style={{ fontSize: '1.2rem', fontWeight: '800' }}>Leave Trends & Analytics</h2>
+            </div>
+            <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--primary)', background: 'var(--primary-glow)', padding: '0.2rem 0.6rem', borderRadius: '99px' }}>Live Trends</span>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}>
-            Aspect-Oriented Programming (AOP) metrics dynamically monitoring database queries, mail deliveries, and business service performance benchmarks.
-          </p>
-          <div className="telemetry-grid">
-            {Object.keys(metrics).length === 0 ? (
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', gridColumn: '1 / -1', textAlign: 'center', padding: '1rem' }}>
-                Awaiting service layer executions to collect initial profiling metrics...
-              </div>
-            ) : (
-              Object.entries(metrics).map(([method, duration]) => (
-                <div key={method} className="telemetry-card">
-                  <div className="telemetry-header" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={method}>
-                    {method.replace('Service.', 'Svc.')}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'baseline' }}>
-                    <span className="telemetry-value">{duration}</span>
-                    <span className="telemetry-unit">ms</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
+          <LeaveAnalyticsChart leaves={leaves} />
+        </motion.div>
 
-      {/* Split Lists view */}
+        {user.role === 'ADMIN' && (
+          <motion.div className="glass-card" style={{ padding: '2rem' }} whileHover={{ y: -3 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <Cpu size={20} style={{ color: 'var(--accent-orange)' }} />
+                <h2 style={{ fontSize: '1.2rem', fontWeight: '800' }}>Spring AOP Telemetry Latency</h2>
+              </div>
+              <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#b83a1b', background: '#fbe3dc', padding: '0.2rem 0.6rem', borderRadius: '99px' }}>Service Profiler</span>
+            </div>
+            <TelemetryBarChart metrics={metrics} />
+          </motion.div>
+        )}
+      </div>
+
+      {/* Main Filter & Data Lists */}
       <div style={styles.listsContainer}>
         {/* Leave Requests Section */}
-        <div className="glass-card" style={styles.listSection}>
+        <motion.div className="glass-card" style={styles.listSection} layout>
           <div style={styles.sectionHeader}>
-            <Calendar size={20} style={{ color: 'var(--primary)' }} />
-            <h2 style={styles.sectionTitle}>{user.role === 'ADMIN' ? 'Recent Leave Requests' : 'My Recent Leaves'}</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <Calendar size={20} style={{ color: 'var(--primary)' }} />
+              <h2 style={styles.sectionTitle}>{user.role === 'ADMIN' ? 'Recent Leave Requests' : 'My Recent Leaves'}</h2>
+            </div>
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              <div style={{ position: 'relative' }}>
+                <Filter size={14} style={{ position: 'absolute', left: '10px', top: '10px', color: 'var(--text-muted)' }} />
+                <input 
+                  type="text" 
+                  placeholder="Filter records..." 
+                  value={searchFilter} 
+                  onChange={(e) => setSearchFilter(e.target.value)} 
+                  style={{ padding: '0.4rem 0.8rem 0.4rem 2rem', borderRadius: '10px', border: '1.5px solid var(--border)', fontSize: '0.85rem', width: '160px' }}
+                />
+              </div>
+              <ExportCSVButton data={filteredLeaves} filename="leave_requests.csv" label="CSV Export" />
+            </div>
           </div>
           <div style={styles.list}>
-            {leaves.length === 0 ? (
-              <p style={styles.emptyText}>No leaves found.</p>
-            ) : (
-              leaves.map(leave => (
-                <div key={leave.id} style={styles.listItem}>
-                  <div style={styles.listItemMeta}>
-                    {user.role === 'ADMIN' && <div style={styles.userName}>{leave.applicantName}</div>}
-                    <div style={styles.leaveDuration}>
-                      {leave.startDate} to {leave.endDate}
+            <AnimatePresence>
+              {filteredLeaves.length === 0 ? (
+                <p style={styles.emptyText}>No matching leave records found.</p>
+              ) : (
+                filteredLeaves.map(leave => (
+                  <motion.div 
+                    key={leave.id} 
+                    style={styles.listItem}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    whileHover={{ scale: 1.01, backgroundColor: '#fdfbf7' }}
+                  >
+                    <div style={styles.listItemMeta}>
+                      {user.role === 'ADMIN' && <div style={styles.userName}>{leave.applicantName}</div>}
+                      <div style={styles.leaveDuration}>
+                        {leave.startDate} to {leave.endDate}
+                      </div>
+                      <div style={styles.leaveReason}>"{leave.reason}"</div>
                     </div>
-                    <div style={styles.leaveReason}>"{leave.reason}"</div>
-                  </div>
-                  <div style={styles.listItemActions}>
-                    <span className={`badge badge-${leave.status.toLowerCase()}`}>
-                      {leave.status}
-                    </span>
-                    {user.role === 'ADMIN' && leave.status === 'PENDING' && (
-                      <div style={styles.actionButtons}>
+                    <div style={styles.listItemActions}>
+                      <span className={`badge badge-${leave.status.toLowerCase()}`}>
+                        {leave.status}
+                      </span>
+                      {user.role === 'ADMIN' && leave.status === 'PENDING' && (
+                        <div style={styles.actionButtons}>
+                          <button 
+                            onClick={() => handleLeaveStatusUpdate(leave.id, 'APPROVED')} 
+                            className="btn btn-primary"
+                            style={styles.actionBtn}
+                          >
+                            Approve
+                          </button>
+                          <button 
+                            onClick={() => handleLeaveStatusUpdate(leave.id, 'REJECTED')} 
+                            className="btn btn-danger"
+                            style={styles.actionBtn}
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Complaints Section */}
+        <motion.div className="glass-card" style={styles.listSection} layout>
+          <div style={styles.sectionHeader}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <AlertTriangle size={20} style={{ color: 'var(--accent-orange)' }} />
+              <h2 style={styles.sectionTitle}>{user.role === 'ADMIN' ? 'Organizational Complaints' : 'My Raised Complaints'}</h2>
+            </div>
+            <ExportCSVButton data={complaints} filename="complaints.csv" label="CSV Export" />
+          </div>
+          <div style={styles.list}>
+            <AnimatePresence>
+              {complaints.length === 0 ? (
+                <p style={styles.emptyText}>No complaints filed.</p>
+              ) : (
+                complaints.map(complaint => (
+                  <motion.div 
+                    key={complaint.id} 
+                    style={styles.listItem}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    whileHover={{ scale: 1.01, backgroundColor: '#fdfbf7' }}
+                  >
+                    <div style={styles.listItemMeta}>
+                      {user.role === 'ADMIN' && <div style={styles.userName}>{complaint.applicantName}</div>}
+                      <div style={styles.complaintSubject}>{complaint.subject}</div>
+                      <div style={styles.leaveReason}>{complaint.description}</div>
+                    </div>
+                    <div style={styles.listItemActions}>
+                      <span className={`badge badge-${complaint.status === 'OPEN' ? 'open' : 'resolved'}`}>
+                        {complaint.status}
+                      </span>
+                      {user.role === 'ADMIN' && complaint.status === 'OPEN' && (
                         <button 
-                          onClick={() => handleLeaveStatusUpdate(leave.id, 'APPROVED')} 
+                          onClick={() => handleResolveComplaint(complaint.id)} 
                           className="btn btn-primary"
                           style={styles.actionBtn}
                         >
-                          Approve
+                          Resolve
                         </button>
-                        <button 
-                          onClick={() => handleLeaveStatusUpdate(leave.id, 'REJECTED')} 
-                          className="btn btn-danger"
-                          style={styles.actionBtn}
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
+                      )}
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </AnimatePresence>
           </div>
-        </div>
-
-        {/* Complaints Section */}
-        <div className="glass-card" style={styles.listSection}>
-          <div style={styles.sectionHeader}>
-            <AlertTriangle size={20} style={{ color: 'var(--primary)' }} />
-            <h2 style={styles.sectionTitle}>{user.role === 'ADMIN' ? 'Organizational Complaints' : 'My Raised Complaints'}</h2>
-          </div>
-          <div style={styles.list}>
-            {complaints.length === 0 ? (
-              <p style={styles.emptyText}>No complaints filed.</p>
-            ) : (
-              complaints.map(complaint => (
-                <div key={complaint.id} style={styles.listItem}>
-                  <div style={styles.listItemMeta}>
-                    {user.role === 'ADMIN' && <div style={styles.userName}>{complaint.applicantName}</div>}
-                    <div style={styles.complaintSubject}>{complaint.subject}</div>
-                    <div style={styles.leaveReason}>{complaint.description}</div>
-                  </div>
-                  <div style={styles.listItemActions}>
-                    <span className={`badge badge-${complaint.status === 'OPEN' ? 'open' : 'resolved'}`}>
-                      {complaint.status}
-                    </span>
-                    {user.role === 'ADMIN' && complaint.status === 'OPEN' && (
-                      <button 
-                        onClick={() => handleResolveComplaint(complaint.id)} 
-                        className="btn btn-primary"
-                        style={styles.actionBtn}
-                      >
-                        Resolve
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -262,7 +325,8 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '80vh',
-    fontSize: '1.2rem',
+    fontSize: '1.1rem',
+    fontWeight: '700',
     color: 'var(--text-secondary)',
   },
   welcomeBanner: {
@@ -271,12 +335,12 @@ const styles = {
     alignItems: 'center',
     padding: '2.5rem',
     marginBottom: '2rem',
-    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(18, 20, 32, 0.7) 100%)',
   },
   welcomeTitle: {
-    fontSize: '2rem',
+    fontSize: '2.2rem',
     fontWeight: '800',
-    marginBottom: '0.5rem',
+    marginBottom: '0.4rem',
+    color: 'var(--text-primary)',
   },
   welcomeSubtitle: {
     color: 'var(--text-secondary)',
@@ -288,9 +352,9 @@ const styles = {
   },
   analyticsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
     gap: '1.5rem',
-    marginBottom: '2rem',
+    marginBottom: '2.5rem',
   },
   statCard: {
     display: 'flex',
@@ -304,17 +368,18 @@ const styles = {
     justifyContent: 'center',
     width: '56px',
     height: '56px',
-    borderRadius: '14px',
+    borderRadius: '18px',
   },
   statLabel: {
     color: 'var(--text-secondary)',
-    fontSize: '0.9rem',
-    fontWeight: '500',
+    fontSize: '0.875rem',
+    fontWeight: '700',
   },
   statVal: {
-    fontSize: '1.8rem',
+    fontSize: '2rem',
     fontWeight: '800',
-    marginTop: '0.25rem',
+    marginTop: '0.2rem',
+    color: 'var(--text-primary)',
   },
   listsContainer: {
     display: 'grid',
@@ -327,14 +392,14 @@ const styles = {
   sectionHeader: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.75rem',
+    justifyContent: 'space-between',
     marginBottom: '1.5rem',
-    borderBottom: '1px solid var(--border)',
+    borderBottom: '1.5px solid var(--border)',
     paddingBottom: '1rem',
   },
   sectionTitle: {
     fontSize: '1.25rem',
-    fontWeight: '700',
+    fontWeight: '800',
   },
   list: {
     display: 'flex',
@@ -346,10 +411,10 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     padding: '1.25rem',
-    background: 'rgba(10, 11, 16, 0.4)',
-    border: '1px solid var(--border)',
-    borderRadius: '12px',
-    transition: 'var(--transition-smooth)',
+    background: '#ffffff',
+    border: '1.5px solid var(--border)',
+    borderRadius: '16px',
+    transition: 'all 0.2s ease',
   },
   listItemMeta: {
     display: 'flex',
@@ -357,17 +422,17 @@ const styles = {
     gap: '0.25rem',
   },
   userName: {
-    fontWeight: '700',
+    fontWeight: '800',
     fontSize: '0.9rem',
     color: 'var(--primary)',
   },
   leaveDuration: {
     fontSize: '1rem',
-    fontWeight: '600',
+    fontWeight: '700',
   },
   complaintSubject: {
     fontSize: '1rem',
-    fontWeight: '600',
+    fontWeight: '700',
   },
   leaveReason: {
     fontSize: '0.85rem',

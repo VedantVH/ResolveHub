@@ -79,6 +79,28 @@ const Login = () => {
           </button>
         </form>
 
+        <div style={styles.quickDemo}>
+          <p style={styles.quickDemoLabel}>Quick Login Demo Accounts:</p>
+          <div style={styles.demoBtnGroup}>
+            <button 
+              type="button" 
+              className="btn btn-secondary" 
+              style={styles.demoBtn} 
+              onClick={() => { setEmail('admin@resolvehub.com'); setPassword('Admin@123'); }}
+            >
+              👩‍💼 Admin
+            </button>
+            <button 
+              type="button" 
+              className="btn btn-secondary" 
+              style={styles.demoBtn} 
+              onClick={() => { setEmail('employee@resolvehub.com'); setPassword('Employee@123'); }}
+            >
+              🧑‍💼 Employee
+            </button>
+          </div>
+        </div>
+
         <div style={styles.footer}>
           <span>Don't have an account? </span>
           <Link to="/register" style={styles.link}>Create one</Link>
@@ -180,6 +202,28 @@ const styles = {
     color: 'var(--primary)',
     textDecoration: 'none',
     fontWeight: '600',
+  },
+  quickDemo: {
+    marginTop: '1.5rem',
+    paddingTop: '1rem',
+    borderTop: '1px solid var(--border)',
+    textAlign: 'center',
+  },
+  quickDemoLabel: {
+    fontSize: '0.8rem',
+    color: 'var(--text-muted)',
+    marginBottom: '0.5rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+  },
+  demoBtnGroup: {
+    display: 'flex',
+    gap: '0.75rem',
+  },
+  demoBtn: {
+    flex: 1,
+    padding: '0.5rem',
+    fontSize: '0.85rem',
   }
 };
 

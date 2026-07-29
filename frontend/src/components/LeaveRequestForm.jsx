@@ -4,6 +4,8 @@ import { useToast } from '../context/ToastContext';
 import axios from 'axios';
 import { Calendar, Plus, FileText, Send } from 'lucide-react';
 
+import confetti from 'canvas-confetti';
+
 const LeaveRequestForm = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -35,6 +37,11 @@ const LeaveRequestForm = () => {
     try {
       await axios.post('http://localhost:8080/api/leaves', { startDate, endDate, reason });
       showToast('Leave request filed successfully!', 'success');
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
       setStartDate('');
       setEndDate('');
       setReason('');

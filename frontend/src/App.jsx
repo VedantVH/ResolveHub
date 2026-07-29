@@ -9,6 +9,8 @@ import Register from './components/Register';
 import LeaveRequestForm from './components/LeaveRequestForm';
 import ComplaintForm from './components/ComplaintForm';
 
+import Background3D from './components/Background3D';
+
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   
@@ -29,6 +31,9 @@ const App = () => {
       <ToastProvider>
         <Router>
           <div className="app-container">
+            <Background3D />
+            <div className="glow-orb glow-orb-1"></div>
+            <div className="glow-orb glow-orb-2"></div>
             <Navbar />
           <Routes>
             <Route path="/login" element={<Login />} />

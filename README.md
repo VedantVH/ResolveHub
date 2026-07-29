@@ -1,6 +1,6 @@
-# 🏆 ResolveHub: Smart Leave & Complaint Management System
+# 🏆 ResolveHub: Smart Leave & Grievance Management System
 
-An enterprise-grade, role-based workflow application built for seamless management of employee leave requests and grievance resolutions. Designed to satisfy modern Full Stack Engineer (FSE) industry benchmarks (including Cognizant FSE / GenC Next evaluations), technical assessments, and recruitment examinations at top product and service-oriented organizations, this system transitions manual, spreadsheet-based systems into a high-performance, auditable digital portal.
+An enterprise-grade, role-based workflow application built for seamless management of employee leave requests and grievance resolutions. Designed with a modern **3D WebGL spatial UI**, real-time **Chart.js analytics**, **Spring AOP performance telemetry**, **OpenAPI / Swagger interactive documentation**, and full **Docker containerization**.
 
 ---
 
@@ -9,35 +9,42 @@ An enterprise-grade, role-based workflow application built for seamless manageme
 ### 👥 Role-Based Portals
 
 #### 🧑‍💼 Employee Portal (User)
-- **Interactive Dashboard**: View real-time counters of pending, approved, and active concerns.
-- **Leave Application Module**: Fluid calendar forms to apply for leaves with automated reason validation.
+- **Interactive 3D Glassmorphism Dashboard**: View real-time counters of pending, approved, and active concerns overlaid on an interactive Three.js 3D particle universe.
+- **Leave Application Module**: Fluid calendar forms with celebratory confetti animations and automated reason validation.
 - **Complaint Submission Log**: Simple interface to file issues/grievances directly to HR.
-- **Real-Time Status Tracking**: Instant visual feedback on application states (Pending, Approved, Rejected, Resolved) using dynamic status badges.
+- **One-Click CSV Data Export**: Download live leave and complaint records directly to standard `.csv` spreadsheet files.
+- **Real-Time Status Tracking**: Dynamic semantic status badges (Emerald, Amber, Rose) providing clear visual feedback.
 
 #### 👩‍💼 HR/Admin Portal (Specialist)
-- **HR Analytics Dashboard**: High-level visual widgets tracking active leave pipelines, approved leaves, and open unresolved grievances.
-- **AOP System Telemetry**: Live performance diagnostics dashboard fetching real-time execution times of Java services.
+- **HR & Trend Analytics Dashboard**: Interactive Chart.js trend graphs tracking leave request pipelines, approved leaves, and open unresolved grievances.
+- **AOP System Telemetry**: Live performance diagnostics dashboard fetching real-time execution times of Java services, visualized with Chart.js bar graphs.
 - **Approval Engine**: Single-click processing to Approve/Reject leaves or Resolve complaints.
+- **Client-Side Live Filter**: Instant search filter for searching organizational records by name, reason, or date.
 - **Auditable Logs**: Aggregated view of all organizational records.
 
 ---
 
 ## ⚡ Advanced Architectural Integrations
 
+### 🎨 3D WebGL & Semantic Glassmorphism UI
+- **Three.js Particle Universe**: Interactive mouse-parallax 3D particle canvas rendering floating wireframe geometries (`Torus` & `Octahedron`).
+- **Chart.js Analytics**: Responsive trend line charts and AOP performance latency bar graphs.
+- **Framer Motion**: Smooth spring physics page transitions, card hover transformations, and dynamic list layout shifts.
+- **Semantic Translucent Palette**: Designed with clear visual intent—Emerald for approvals, Amber for pending reviews, Rose Crimson for urgent concerns, and Electric Violet for actions.
+
 ### 📊 Aspect-Oriented Programming (Spring AOP Profiling)
-To demonstrate advanced system-level engineering, the backend implements Spring AOP to profile and audit service performance.
 - **Aspect Execution**: The `PerformanceLoggingAspect` class dynamically intercepts method executions inside the service layer and records execution metrics.
-- **Visual Analytics**: Metrics are securely exposed via the REST endpoint `/api/admin/metrics` and visualized inside a dedicated "Spring Boot Runtime Telemetry" card inside the React Admin dashboard.
+- **Visual Analytics**: Metrics are exposed via `/api/admin/metrics` and rendered on the Admin Telemetry dashboard.
+
+### 📜 Interactive OpenAPI / Swagger Documentation
+- **Swagger UI**: Integrated OpenAPI spec accessible at `/swagger-ui.html` for interactive REST API testing with JWT Bearer authentication.
 
 ### 🔀 Asynchronous Concurrency & Multithreading (`@Async`)
-To keep backend operations highly responsive, transactional emails are dispatched asynchronously.
-- **Thread Pool Config**: Set up a custom `ThreadPoolTaskExecutor` pool inside `AsyncConfig` (`core: 3`, `max: 10`, `queue: 100`).
-- **Async Execution**: Annotating `EmailService` with `@Async` offloads SMTP processing to background worker threads, freeing HTTP request threads immediately.
+- **Thread Pool Config**: Custom `ThreadPoolTaskExecutor` pool inside `AsyncConfig` (`core: 3`, `max: 10`, `queue: 100`) offloading SMTP email processing to background worker threads.
 
 ### 🛡️ Custom Java Constraints & Validation (JSR-380 Spec)
-Rather than relying solely on client validation, strict custom validation constraints are enforced on the Java model:
-- **DateRange Constraint**: Created `@ValidDateRange` custom annotation supported by a custom `DateRangeValidator` class.
-- **REST Exception Handler**: A global `@RestControllerAdvice` class (`GlobalExceptionHandler`) intercepts validation rejections and returns formatted, field-specific `ErrorResponse` payloads.
+- **DateRange Constraint**: Custom `@ValidDateRange` annotation supported by `DateRangeValidator` class.
+- **Global Exception Handler**: Intercepts validation rejections and returns formatted `ErrorResponse` payloads.
 
 ---
 
@@ -46,80 +53,75 @@ Rather than relying solely on client validation, strict custom validation constr
 | Component | Technology | Description |
 | :--- | :--- | :--- |
 | **Backend** | **Java 17 / Spring Boot 3.2.5** | Core framework for performance, security, and DI. |
+| **API Docs** | **SpringDoc OpenAPI / Swagger** | Interactive API documentation. |
 | **Security** | **Spring Security & JWT** | Stateless role-based authorization (USER/ADMIN). |
-| **Database** | **MySQL / JPA Hibernate** | ORM mapper for robust schema updates and relations. |
-| **Notifications** | **Spring Boot Mail** | Asynchronous email generation. |
-| **Frontend** | **React.js (Vite)** | Reactive UI engine with fast Hot Module Replacement (HMR). |
-| **Icons** | **Lucide React** | Clean, premium SVG vector iconography. |
-| **Styling** | **Premium Vanilla CSS** | Curated CSS tokens, backdrop filters, glassmorphic effects. |
+| **Database** | **MySQL / H2 / JPA Hibernate** | Flexible ORM supporting H2 in-memory or MySQL 8. |
+| **Frontend** | **React.js (Vite) + Three.js** | WebGL 3D particle canvas and reactive UI engine. |
+| **Charts** | **Chart.js + React-Chartjs-2** | Interactive trend graphs and telemetry metrics. |
+| **Animations** | **Framer Motion + Confetti** | Smooth spring animations and celebratory micro-interactions. |
+| **Containerization**| **Docker & Docker Compose** | Multi-stage Docker builds for backend, frontend, and MySQL. |
 
 ---
 
-## 📁 Project Architecture & Directory Layout
+## 📁 Directory Layout
 
 ```
-smart-leave-system/
+ResolveHub/
 ├── backend/
+│   ├── Dockerfile
 │   ├── src/main/java/com/smartleave/backend/
+│   │   ├── aspect/          # Spring AOP Profiling Aspect
+│   │   ├── config/          # DataInitializer, OpenApiConfig, AsyncConfig
 │   │   ├── controller/      # REST API Controllers (Auth, Leave, Complaint)
-│   │   ├── dto/             # Data Transfer Objects (AuthReq, LeaveReqDTO)
 │   │   ├── entity/          # JPA Models (User, LeaveRequest, Complaint)
-│   │   ├── repository/      # Spring Data Repositories
 │   │   ├── security/        # JWT & Web Security Core
-│   │   └── service/         # Business Logic (Email, Leave, Complaint Service)
-│   │
+│   │   └── service/         # Business Logic
 │   └── src/main/resources/
-│       └── application.properties # Server configs, MySQL, and Mail properties
+│       └── application.properties # H2/MySQL connection properties
 │
-└── frontend/
-    ├── src/
-    │   ├── components/      # UI components (Navbar, Login, Dashboard, Forms)
-    │   ├── context/         # AuthContext state manager & Axios interceptors
-    │   ├── App.jsx          # Route control & Protected routes
-    │   ├── index.css        # Premium Global Styling & Theme System
-    │   └── main.jsx         # DOM binder
-    └── index.html           # Main HTML shell
+├── frontend/
+│   ├── Dockerfile
+│   ├── src/
+│   │   ├── components/      # Dashboard, Background3D, AnalyticsCharts, ExportCSVButton
+│   │   ├── context/         # AuthContext & ToastContext
+│   │   ├── index.css        # Semantic Translucent Glassmorphism Theme
+│   │   └── App.jsx          # Route control
+│   └── index.html
+│
+└── docker-compose.yml       # Multi-container orchestration
 ```
 
 ---
 
 ## ⚙️ Running Locally
 
-### 🗄️ Database Setup
-1. Open your MySQL client (Command Line, Workbench, or phpMyAdmin).
-2. The backend is configured to automatically create the database if it doesn't exist via the connection properties: `createDatabaseIfNotExist=true`.
-3. Set your MySQL username and password in [application.properties](file:///Users/vedanthonnangi/Desktop/Java/smart-leave-system/backend/src/main/resources/application.properties):
-   ```properties
-   spring.datasource.username=your_username
-   spring.datasource.password=your_password
+### Option 1: Zero-Config Standalone Run
+1. **Start Backend**:
+   ```bash
+   cd backend
+   ./mvnw spring-boot:run
    ```
+   *Runs on `http://localhost:8080` with embedded H2 database and auto-seeded demo accounts.*
 
-### ☕ Running the Backend
-From the `backend` directory, start the Spring Boot server using the Maven wrapper:
-```bash
-cd backend
-./mvnw spring-boot:run
-```
-The server will boot and run on `http://localhost:8080`.
+2. **Start Frontend**:
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+   *Launches on `http://localhost:5173`.*
 
-### ⚛️ Running the Frontend
-From the `frontend` directory, install packages and start the Vite development server:
+### Option 2: Docker Compose (Full-Stack)
 ```bash
-cd frontend
-npm install
-npm run dev
+docker-compose up --build
 ```
-The development server will launch on `http://localhost:5173`. Open this URL in your browser to experience the application.
+- **Frontend (Nginx):** `http://localhost`
+- **Backend API:** `http://localhost:8080`
+- **Swagger Docs:** `http://localhost:8080/swagger-ui.html`
 
 ---
 
-## 🎯 Verification & Build Success
-The backend has been verified using a clean Maven compiler run:
-```bash
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  7.373 s
-[INFO] ------------------------------------------------------------------------
-```
-Both backend services and frontend interfaces are fully written, styled, and resolved without conflicts!
+## 🔑 Demo Login Accounts
+Auto-seeded on startup via `DataInitializer`:
+- **HR Admin:** `admin@resolvehub.com` / `Admin@123`
+- **Employee:** `employee@resolvehub.com` / `Employee@123`
